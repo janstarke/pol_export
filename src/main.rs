@@ -1,4 +1,4 @@
-use std::{fs::File, io::{Read, BufReader}, char::{decode_utf16, DecodeUtf16Error}};
+use std::{fs::File, io::{Read, BufReader}, char::{decode_utf16}};
 
 use anyhow::{Result, anyhow};
 use clap::Parser;
@@ -52,12 +52,18 @@ fn main() -> Result<()> {
     }
 
     let reader = U16Reader::new(polfile);
-    let content: String = decode_utf16(reader)
-        .map(|r| r.or(Ok('?')))
-        .map(|r: Result<char, DecodeUtf16Error>| r.unwrap())
-        .collect();
-    let content = content.replace("][", "]\n[");
-
-    println!("{}", content);
+    let mut last_char = '\0';
+    for r in decode_utf16(reader) {
+        match r {
+            Err(_) => {print!("?")}
+            Ok(c) => {
+                if last_char == ']' && c == '[' {
+                    print!("\n");
+                }
+                print!("{}", c);
+                last_char = c;
+            }
+        }
+    }
     Ok(())
 }

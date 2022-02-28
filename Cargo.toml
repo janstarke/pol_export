@@ -1,6 +1,6 @@
 [package]
 name = "pol_export"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Jan Starke <Jan.Starke@t-systems.com>"]
 description = "Exporter for Windows Registry Policy Files"
