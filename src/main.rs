@@ -1,7 +1,6 @@
 use std::{
-    char::decode_utf16,
     fs::File,
-    io::{BufReader, Read, stdout},
+    io::{Read, stdout},
 };
 
 use anyhow::{anyhow, Result};
@@ -26,30 +25,6 @@ struct Args {
 
     #[clap(flatten)]
     pub (crate) verbose: clap_verbosity_flag::Verbosity,
-}
-
-struct U16Reader {
-    file: BufReader<File>,
-}
-
-impl U16Reader {
-    pub fn new(file: File) -> Self {
-        Self {
-            file: BufReader::new(file),
-        }
-    }
-}
-
-impl Iterator for U16Reader {
-    type Item = u16;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let mut buf: [u8; 2] = [0; 2];
-        match self.file.read_exact(&mut buf) {
-            Err(_) => None,
-            Ok(_) => Some((buf[1] as u16) << 8 | buf[0] as u16),
-        }
-    }
 }
 
 fn main() -> Result<()> {

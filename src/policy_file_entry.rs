@@ -60,7 +60,7 @@ fn words_to_string_lossy(words: Vec<u16>) -> String {
 #[br(import(length: u32))]
 struct WordArray(#[br(count=length)] Vec<u16>);
 
-fn read_char<R: Read + Seek>(reader: &mut R, _ro: &ReadOptions, args: ()) -> BinResult<char> {
+fn read_char<R: Read + Seek>(reader: &mut R, _ro: &ReadOptions, _args: ()) -> BinResult<char> {
     let b: Vec<u16> = vec![reader.read_le()?];
     Ok(char::decode_utf16(b.into_iter())
         .map(|r| r.unwrap_or(char::REPLACEMENT_CHARACTER))
@@ -84,7 +84,7 @@ fn read_data<R: Read + Seek>(
         KeyValueDataType::RegExpandSZ => todo!(),
         KeyValueDataType::RegBinary => todo!(),
         KeyValueDataType::RegDWord => RegistryValue::RegDWord(reader.read_le()?),
-        KeyValueDataType::RegDWordBigEndian => RegistryValue::RegDWord(reader.read_be()?),
+        KeyValueDataType::RegDWordBigEndian => RegistryValue::RegDWordBigEndian(reader.read_be()?),
         KeyValueDataType::RegLink => todo!(),
         KeyValueDataType::RegMultiSZ => todo!(),
         KeyValueDataType::RegResourceList => todo!(),
@@ -99,7 +99,7 @@ fn read_data<R: Read + Seek>(
 fn read_sz_string<R: Read + Seek>(
     reader: &mut R,
     _ro: &ReadOptions,
-    args: (),
+    _args: (),
 ) -> BinResult<String> {
     let mut words: Vec<u16> = Vec::new();
     loop {
