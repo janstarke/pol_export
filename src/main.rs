@@ -62,6 +62,8 @@ fn main() -> Result<()> {
             },
             Err(why) => match why {
                 binread::Error::Io(why) if why.kind() == std::io::ErrorKind::OutOfMemory => break,
+                binread::Error::Io(why) if why.kind() == std::io::ErrorKind::BrokenPipe => break,
+                binread::Error::Io(why) if why.kind() == std::io::ErrorKind::UnexpectedEof => break,
                 _ => {
                     log::error!("{why}");
                     //continue;
