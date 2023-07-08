@@ -1,7 +1,18 @@
-use std::{fs::File, io::{Read, BufReader}, char::{decode_utf16}};
+use std::{
+    fs::File,
+    io::{Read, stdout},
+};
 
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
+use binread::{BinReaderExt, BinResult};
 use clap::Parser;
+
+mod policy_file_entry;
+
+use csv::Writer;
+use policy_file_entry::*;
+use simplelog::{TermLogger, Config};
+
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -9,59 +20,50 @@ struct Args {
     /// Name of the file to read
     #[clap()]
     polfile: String,
-}
 
-struct U16Reader {
-    file: BufReader<File>
-}
-
-impl U16Reader {
-    pub fn new(file: File) -> Self {
-        Self {
-            file: BufReader::new(file)
-        }
-    }
-}
-
-impl Iterator for U16Reader {
-    type Item = u16;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let mut buf:[u8;2] = [0;2];
-        match self.file.read_exact(&mut buf) {
-            Err(_) => None,
-            Ok(_) => Some((buf[1] as u16) << 8 | buf[0] as u16)
-        }
-    }
+    #[clap(flatten)]
+    pub (crate) verbose: clap_verbosity_flag::Verbosity,
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
+    let _ = TermLogger::init(
+        args.verbose.log_level_filter(), 
+        Config::default(),
+        simplelog::TerminalMode::Stderr,
+        simplelog::ColorChoice::Auto);
+
     let mut polfile = File::open(args.polfile)?;
 
-    let mut header:[u8;4] = [0; 4];
+    let mut header: [u8; 4] = [0; 4];
     polfile.read_exact(&mut header)?;
     if &header != b"PReg" {
         return Err(anyhow!("invalid magic number"));
     }
 
-    let mut version:[u8;4] = [0; 4];
+    let mut version: [u8; 4] = [0; 4];
     polfile.read_exact(&mut version)?;
     if &version != b"\x01\0\0\0" {
         return Err(anyhow!("invalid version number"));
     }
 
-    let reader = U16Reader::new(polfile);
-    let mut last_char = '\0';
-    for r in decode_utf16(reader) {
-        match r {
-            Err(_) => {print!("?")}
-            Ok(c) => {
-                if last_char == ']' && c == '[' {
-                    print!("\n");
+    let mut wtr = Writer::from_writer(stdout());
+    
+    loop {
+        let entry_result: BinResult<PolicyFileEntry> = polfile.read_le();
+        match entry_result {
+            Ok(entry) => {
+                wtr.serialize(entry)?;
+            },
+            Err(why) => match why {
+                binread::Error::Io(why) if why.kind() == std::io::ErrorKind::OutOfMemory => break,
+                binread::Error::Io(why) if why.kind() == std::io::ErrorKind::BrokenPipe => break,
+                binread::Error::Io(why) if why.kind() == std::io::ErrorKind::UnexpectedEof => break,
+                _ => {
+                    log::error!("{why}");
+                    //continue;
+                    break;
                 }
-                print!("{}", c);
-                last_char = c;
             }
         }
     }

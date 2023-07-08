@@ -1,8 +1,8 @@
 [package]
 name = "pol_export"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
-authors = ["Jan Starke <Jan.Starke@t-systems.com>"]
+authors = ["Jan Starke <Jan.Starke@telekom.de>"]
 description = "Exporter for Windows Registry Policy Files"
 homepage = "https://www.github.com/janstarke/pol_export"
 license = "GPL-3.0"
@@ -11,4 +11,11 @@ license = "GPL-3.0"
 
 [dependencies]
 clap = {version = "4.3", features = ["derive"] }
+clap-verbosity-flag = "2.0.0"
 anyhow = "1.0"
+log = {version = "0.4", features = [ "release_max_level_info" ]}
+simplelog = "0.12"
+binread = "2.2.0"
+csv = "1.2.2"
+serde = { version = "1.0", features = ["derive"] }
+windows_types_registry = "0.1"
