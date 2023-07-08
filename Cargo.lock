@@ -846,6 +846,8 @@ checksum = "4542c6e364ce21bf45d69fdd2a8e455fa38d316158cfd43b3ac1c5b1b19f8e00"
 [[package]]
 name = "windows_types_registry"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93407467a0204bf4b2a197dd4335fb389f75a2f035e12d4401ea6de5bee38d86"
 dependencies = [
  "binread",
  "chrono",
