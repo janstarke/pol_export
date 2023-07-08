@@ -1,10 +1,13 @@
 # pol_export
 Exporter for Windows Registry Policy Files
 
+> **Warning**
+> This Repository has been moved to <https://github.com/janstarke/dfir-toolkit>
+
 ## Installation
 
 ```bash
-cargo install pol_export
+cargo install dfir-toolkit
 ```
 
 ## Usage

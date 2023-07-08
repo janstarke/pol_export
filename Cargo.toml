@@ -1,10 +1,10 @@
 [package]
 name = "pol_export"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["Jan Starke <Jan.Starke@telekom.de>"]
 description = "Exporter for Windows Registry Policy Files"
-homepage = "https://www.github.com/janstarke/pol_export"
+homepage = "https://www.github.com/janstarke/dfir-toolkit"
 license = "GPL-3.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
