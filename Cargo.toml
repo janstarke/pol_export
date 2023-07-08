@@ -18,4 +18,4 @@ simplelog = "0.12"
 binread = "2.2.0"
 csv = "1.2.2"
 serde = { version = "1.0", features = ["derive"] }
-windows_types_registry = {path="../dfir-toolkit/libs/windows/types/registry"}
+windows_types_registry = "0.1"
