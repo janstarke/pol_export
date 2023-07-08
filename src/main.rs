@@ -8,15 +8,10 @@ use binread::{BinReaderExt, BinResult};
 use clap::Parser;
 
 mod policy_file_entry;
-mod key_value_datatype;
-mod registry_value;
-
-mod registry;
 
 use csv::Writer;
 use policy_file_entry::*;
 use simplelog::{TermLogger, Config};
-use registry::*;
 
 
 #[derive(Parser, Debug)]
