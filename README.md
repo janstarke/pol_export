@@ -2,7 +2,7 @@
 Exporter for Windows Registry Policy Files
 
 > **Warning**
-> This Repository has been moved to <https://github.com/janstarke/dfir-toolkit>
+> This Repository has been moved to <https://github.com/dfir-dd/dfir-toolkit>
 
 ## Installation
 
